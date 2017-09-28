@@ -1,4 +1,6 @@
-var bcrypt = require('bcrypt-nodejs');
+var Promise = require("bluebird");
+var bcrypt = Promise.promisifyAll(require('bcrypt-nodejs'));
+
 // api/services/AuthenticationService.js
 module.exports = {
 
@@ -11,18 +13,28 @@ module.exports = {
   },
 
   /**
-   * TODO: move salt to config, somewhere in the environment
-   * Login with inputs email and password
-   * @param inputs array
-   * @param cb function callback for successful login
+   *
+   * @param email
+   * @param password
+   * @returns promise {*}
    */
-  login: function (inputs, cb) {
-    bcrypt.hash(inputs.password, "$2a$10$llw0G6IyibUob8h5XRt9xuRczaGdCm/AiV6SSjf5v78XS824EGbh.", null, function (err, hash) {
-      if (err) return cb(err);
-      User.findOne({
-        email: inputs.email,
-        password: hash
-      }).exec(cb);
+  authenticate: function (email, password) {
+    return new Promise(function (resolve, reject) {
+      var promisedUser;
+      return User.findOne({
+        email: email
+      }).then(function (user) {
+        promisedUser = user;
+        return bcrypt.compareAsync(password, user.password);
+      }).catch(function (err) {
+        reject(false);
+      }).then(function (result) {
+        if (result) {
+          resolve(promisedUser)
+        } else {
+          reject(false);
+        }
+      });
     });
 
   }

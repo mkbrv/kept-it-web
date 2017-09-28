@@ -37,23 +37,27 @@ describe("AuthenticationService", function () {
     });
 
     it('should be able to login', function (done) {
-      AuthenticationService.login(mockUser, function (err, user) {
-        if (err) {
-          throw err;
-        }
-        assert.isNotNull(user);
-        done();
-      });
+      AuthenticationService.authenticate(mockUser.email, mockUser.password)
+        .then(function (user) {
+          assert.isObject(user);
+          done();
+        });
     });
 
     it('should not serialize password', function (done) {
-      AuthenticationService.login(mockUser, function (err, user) {
-        if (err) {
-          throw err;
-        }
-        assert.isUndefined(user.toJSON().password);
-        done();
-      });
+      AuthenticationService.authenticate(mockUser.email, mockUser.password)
+        .then(function (user) {
+          assert.isUndefined(user.toJSON().password);
+          done();
+        });
+    });
+
+    it('should not authenticate invalid password', function (done) {
+      AuthenticationService.authenticate(mockUser.email, "random")
+        .catch(function (isLoggedIn) {
+          assert.notOk(isLoggedIn);
+          done();
+        });
     });
 
     it('should not accept less than 6 characters password', function (done) {
