@@ -1,4 +1,4 @@
-var assert = require('assert');
+var assert = require('chai').assert;
 
 module.exports = {
 
@@ -18,10 +18,9 @@ module.exports = {
 
         it('CREATE: should create a bookmark', function (done) {
           sails.models[name].create(bookmark)
-            .then(function (results) {
+            .then(function () {
               done();
             }).catch(done);
-
         });
 
         it('READ: should find the created bookmark', function (done) {
@@ -32,8 +31,7 @@ module.exports = {
               var saved = results[0];
               assert.equal(bookmark.url, saved.url);
               done();
-            })
-            .catch(done);
+            }).catch(done);
         });
 
         it('UPDATE: should update the created bookmark', function (done) {
@@ -43,14 +41,13 @@ module.exports = {
               var saved = results[0];
               assert.equal(updated.url, saved.url);
               done();
-            })
-            .catch(done);
+            }).catch(done);
 
         });
 
         it("DELETE: should delete the created bookmark", function (done) {
           sails.models[name].destroy(updated)
-            .then(function (results) {
+            .then(function () {
               sails.models[name].find({
                 "url": updated.url
               })
@@ -59,8 +56,7 @@ module.exports = {
                   done();
                 })
                 .catch(done);
-            })
-            .catch(done);
+            }).catch(done);
         });
 
       });

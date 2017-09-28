@@ -6,7 +6,8 @@ before(function (done) {
   this.timeout(5000);
 
   sails.lift({
-    "environment": "test"
+    "environment": "test",
+    "port": 1338
 
   }, function (err) {
     if (err) return done(err);

@@ -7,11 +7,14 @@
 
 module.exports = {
 
-  find: function (req, res) {
-  },
   findOne: function (req, res) {
-  },
-  create: function (requ, res) {
+    var id = Bookmarks.mongo.objectId(req.param("id"));
+    Bookmarks.findOne({"id": id})
+      .exec(function (err, found) {
+        if (err) throw err;
+        return res.json(found);
+      });
   }
+
 };
 
