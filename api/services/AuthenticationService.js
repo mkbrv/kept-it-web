@@ -14,29 +14,35 @@ module.exports = {
 
   /**
    *
+   * Finds user by email and validates password hashes;
    * @param email
    * @param password
-   * @returns promise {*}
+   * @return Promise
    */
   authenticate: function (email, password) {
     return new Promise(function (resolve, reject) {
+
       var promisedUser;
+
       return User.findOne({
         email: email
-      }).then(function (user) {
-        promisedUser = user;
-        return bcrypt.compareAsync(password, user.password);
-      }).catch(function (err) {
-        reject(false);
-      }).then(function (result) {
-        if (result) {
-          resolve(promisedUser)
-        } else {
-          reject(false);
-        }
-      });
+      })
+        .then(function (user) {
+          //validate password hashes
+          promisedUser = user;
+          return bcrypt.compareAsync(password, user.password);
+        })
+        .catch(function (err) {
+          reject(new Error("Email not found"));
+        })
+        .then(function (result) {
+          if (result) {
+            resolve(promisedUser)
+          } else {
+            reject(new Error("Invalid Password"));
+          }
+        });
     });
-
   }
 
 };

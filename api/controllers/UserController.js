@@ -7,6 +7,11 @@
 
 module.exports = {
 
+
+  welcome: function (req, res) {
+    res.view("user/welcome");
+  },
+
   /**
    * `UserController.login()`
    */
@@ -24,13 +29,14 @@ module.exports = {
    * `UserController.logout()`
    */
   logout: function (req, res) {
-    req.session.me = null;
 
-    if (req.wantsJSON) {
-      return res.ok('Logged out successfully!');
-    }
+    req.session.destroy(function(err) {
+      if (req.wantsJSON) {
+        return res.ok('Logged out successfully!');
+      }
 
-    return res.redirect('/');
+      return res.redirect('/');
+    });
   },
 
 
@@ -38,22 +44,22 @@ module.exports = {
    * `UserController.signup()`
    */
   signup: function (req, res) {
-
-    // Attempt to signup a user using the provided parameters
-    User.signup({
+    var user = {
       name: req.param('name'),
       email: req.param('email'),
       password: req.param('password')
-    }, function (err, user) {
+    };
+
+    AuthenticationService.register(user, function (err, user) {
 
       if (err) return res.negotiate(err);
-
       req.session.me = user.id;
 
       if (req.wantsJSON) {
-        return res.ok('Signup successful!');
+        return res.ok('OK!');
       }
       return res.redirect('/welcome');
     });
+
   }
 };

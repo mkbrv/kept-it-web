@@ -1,1 +1,8 @@
-Sails.js
+<h1>Login With Sails</h1>
+
+<% if (req.session.me) { %>
+<a href="/logout">Logout</a>
+<% } else { %>
+<a href="/login">Login</a> | <a href="/signup">Signup</a>
+<% } %>
+

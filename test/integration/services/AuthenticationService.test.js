@@ -23,11 +23,20 @@ describe("AuthenticationService", function () {
           assert.equal(mockUser.email, user.email);
           done();
         });
+
       });
     });
 
+    it('should not be able to register twice', function (done) {
+      AuthenticationService.register(mockUser, function (err) {
+        assert.isObject(err);
+        done();
+      });
+    });
+
+
     it('should have the password encrypted during registration', function (done) {
-      AuthenticationService.register(mockUser, function (err, user) {
+      User.findOne({"email": mockUser.email}).exec(function (err, user) {
         if (err) {
           throw err;
         }
@@ -54,8 +63,8 @@ describe("AuthenticationService", function () {
 
     it('should not authenticate invalid password', function (done) {
       AuthenticationService.authenticate(mockUser.email, "random")
-        .catch(function (isLoggedIn) {
-          assert.notOk(isLoggedIn);
+        .catch(function (err) {
+          assert.instanceOf(err, Error);
           done();
         });
     });
