@@ -1,2 +1,2 @@
 var test = require("../../generic/GenericModelCRUDTest");
-test.runTests("tags");
+test.runTests("tags", {});
