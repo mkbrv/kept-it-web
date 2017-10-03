@@ -1,2 +1,2 @@
 var test = require("../../generic/GenericModelCRUDTest");
-test.runTests("bookmarks");
+test.runTests("bookmarks", {});
